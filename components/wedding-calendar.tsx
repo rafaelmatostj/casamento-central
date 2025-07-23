@@ -93,12 +93,13 @@ export function WeddingCalendar({ couples, parseDate, onCoupleSelect }: WeddingC
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <Heart className="h-5 w-5 text-pink-500" />
-            Calendário de Aniversários
-          </CardTitle>
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center justify-center sm:justify-start gap-2 text-base sm:text-lg mb-3 sm:mb-0">
+          <Heart className="h-5 w-5 text-pink-500" />
+          Calendário de Aniversários
+        </CardTitle>
+        
+        <div className="flex justify-center sm:justify-end mt-2 sm:mt-0">
           <div className="flex items-center gap-1 sm:gap-2">
             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => navigateMonth("prev")}>
               <ChevronLeft className="h-4 w-4" />
