@@ -185,7 +185,7 @@ export const couplesData = [
     husband: "Rone Pereira",
     wife: "Sandra dos Santos",
     weddingDate: "11/09/2010",
-    photo: "/placeholder.svg?height=100&width=100",
+    photo: "rone-sadra.png",
     hasWeddingDate: true,
   },
   {
