@@ -1,7 +1,7 @@
 "use client"
 
 import { Heart, Calendar, Eye } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -59,90 +59,84 @@ export function CouplesList({ couples, parseDate, calculateMarriageTime, onCoupl
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Heart className="h-5 w-5 text-pink-500" />
-          Lista de Casais ({couples.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          {couples.map((couple) => {
-            const daysUntilAnniversary = getNextAnniversary(couple)
-            const marriageTime = calculateMarriageTime(couple.weddingDate)
+    <div className="space-y-6">
+      <h2 className="flex items-center gap-2 text-xl font-semibold">
+        <Heart className="h-5 w-5 text-pink-500" />
+        Lista de Casais ({couples.length})
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {couples.map((couple) => {
+          const daysUntilAnniversary = getNextAnniversary(couple)
+          const marriageTime = calculateMarriageTime(couple.weddingDate)
 
-            return (
-              <div
-                key={couple.id}
-                className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={couple.photo || "/placeholder.svg"} alt={`${couple.husband} e ${couple.wife}`} />
-                  <AvatarFallback className="bg-pink-100 text-pink-600">
-                    {couple.husband.charAt(0)}
-                    {couple.wife.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+          return (
+            <div
+              key={couple.id}
+              className="flex flex-col items-center text-center space-y-4 p-6 border rounded-xl hover:shadow-lg transition-shadow duration-300 bg-white"
+            >
+              <Avatar className="h-24 w-24 border-4 border-white shadow-md">
+                <AvatarImage src={couple.photo ? `/photos/${couple.photo}` : "/photos/padrao.jpg"} alt={`${couple.husband} e ${couple.wife}`} />
+                <AvatarFallback className="bg-pink-100 text-pink-600 text-2xl">
+                  {couple.husband.charAt(0)}
+                  {couple.wife.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
 
-                <div className="flex-1 space-y-2">
-                  <div>
-                    <h3 className="font-semibold text-lg">
-                      {couple.husband} & {couple.wife}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4" />
-                      {couple.hasWeddingDate
-                        ? `Casados em ${formatDate(couple.weddingDate)}`
-                        : "Data de casamento não informada"}
-                    </div>
-                  </div>
+              <div className="flex-1 space-y-2">
+                <h3 className="font-bold text-xl text-gray-800">
+                  {couple.husband} & {couple.wife}
+                </h3>
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                  <Calendar className="h-4 w-4" />
+                  {couple.hasWeddingDate
+                    ? formatDate(couple.weddingDate)
+                    : "Data não informada"}
+                </div>
+              </div>
 
-                  <div className="flex items-center gap-2">
-                    {couple.hasWeddingDate ? (
-                      <>
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                          {marriageTime.years} anos, {marriageTime.months} meses
-                        </Badge>
-                        {daysUntilAnniversary !== null && daysUntilAnniversary <= 30 && (
-                          <Badge className="bg-pink-100 text-pink-700 border-pink-200">
-                            {daysUntilAnniversary === 0
-                              ? "Aniversário hoje!"
-                              : daysUntilAnniversary === 1
-                                ? "Aniversário amanhã!"
-                                : `${daysUntilAnniversary} dias para aniversário`}
-                          </Badge>
-                        )}
-                      </>
-                    ) : (
-                      <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-300">
-                        Data pendente
+              <div className="flex flex-wrap justify-center items-center gap-2">
+                {couple.hasWeddingDate ? (
+                  <>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 py-1 px-3 text-xs">
+                      {marriageTime.years}a, {marriageTime.months}m casados
+                    </Badge>
+                    {daysUntilAnniversary !== null && daysUntilAnniversary <= 30 && (
+                      <Badge className="bg-pink-100 text-pink-700 border-pink-200 py-1 px-3 text-xs">
+                        {daysUntilAnniversary === 0
+                          ? "Aniversário hoje!"
+                          : daysUntilAnniversary === 1
+                            ? "Aniversário amanhã!"
+                            : `Faltam ${daysUntilAnniversary} dias`}
                       </Badge>
                     )}
-                  </div>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onCoupleClick(couple)}
-                  className="flex items-center gap-2"
-                >
-                  <Eye className="h-4 w-4" />
-                  Ver Detalhes
-                </Button>
+                  </>
+                ) : (
+                  <Badge variant="outline" className="bg-gray-100 text-gray-600 border-gray-300 py-1 px-3 text-xs">
+                    Data pendente
+                  </Badge>
+                )}
               </div>
-            )
-          })}
-        </div>
 
-        {couples.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <Heart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-            <p>Nenhum casal encontrado com os filtros aplicados.</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onCoupleClick(couple)}
+                className="w-full flex items-center justify-center gap-2 mt-4"
+              >
+                <Eye className="h-4 w-4" />
+                Ver Detalhes
+              </Button>
+            </div>
+          )
+        })}
+      </div>
+
+      {couples.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          <Heart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <p>Nenhum casal encontrado com os filtros aplicados.</p>
+        </div>
+      )}
+    </div>
   )
 }

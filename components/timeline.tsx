@@ -1,9 +1,8 @@
 "use client"
 
 import { Heart, Calendar } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 
 interface Couple {
   id: number
@@ -28,17 +27,37 @@ interface TimelineProps {
 }
 
 export function Timeline({ couples, parseDate, calculateMarriageTime }: TimelineProps) {
-  const couplesWithDate = couples.filter((couple) => couple.hasWeddingDate)
+  const couplesWithDate = couples
+    .filter((couple) => couple.hasWeddingDate)
+    .sort((a, b) => {
+      const dateA = parseDate(a.weddingDate)
+      const dateB = parseDate(b.weddingDate)
+      if (!dateA || !dateB) return 0
+      return dateA.getTime() - dateB.getTime()
+    })
+
   const couplesWithoutDate = couples.filter((couple) => !couple.hasWeddingDate)
 
-  const sortedCouplesWithDate = [...couplesWithDate].sort((a, b) => {
-    const dateA = parseDate(a.weddingDate)
-    const dateB = parseDate(b.weddingDate)
-    if (!dateA || !dateB) return 0
-    return dateA.getTime() - dateB.getTime()
-  })
+  const getYearFromDate = (dateString: string) => {
+    const date = parseDate(dateString)
+    return date ? date.getFullYear() : 0
+  }
 
-  const sortedCouples = [...sortedCouplesWithDate, ...couplesWithoutDate]
+  const couplesByYear = couplesWithDate.reduce(
+    (acc, couple) => {
+      const year = getYearFromDate(couple.weddingDate)
+      if (!acc[year]) {
+        acc[year] = []
+      }
+      acc[year].push(couple)
+      return acc
+    },
+    {} as Record<number, Couple[]>,
+  )
+
+  const sortedYears = Object.keys(couplesByYear)
+    .map(Number)
+    .sort((a, b) => a - b)
 
   const formatDate = (dateString: string) => {
     const date = parseDate(dateString)
@@ -50,83 +69,49 @@ export function Timeline({ couples, parseDate, calculateMarriageTime }: Timeline
     })
   }
 
-  const getYearFromDate = (dateString: string) => {
-    const date = parseDate(dateString)
-    return date ? date.getFullYear() : 0
-  }
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-purple-500" />
-          Linha do Tempo dos Casamentos
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-200 via-pink-200 to-purple-200"></div>
+    <div className="space-y-10">
+      {sortedYears.map((year) => (
+        <div key={year}>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-200 to-transparent"></div>
+            <h3 className="text-2xl font-bold text-purple-600 bg-purple-50 px-4 py-2 rounded-full shadow-sm">
+              {year}
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-200 to-transparent"></div>
+          </div>
 
-          <div className="space-y-8">
-            {sortedCouples.map((couple, index) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {couplesByYear[year].map((couple) => {
               const marriageTime = calculateMarriageTime(couple.weddingDate)
               const currentYears = marriageTime.years
-
               return (
-                <div key={couple.id} className="relative flex items-start space-x-6">
-                  {/* Timeline dot */}
-                  <div
-                    className={`relative z-10 flex items-center justify-center w-16 h-16 bg-white border-4 rounded-full shadow-lg ${
-                      couple.hasWeddingDate ? "border-pink-200" : "border-gray-300"
-                    }`}
-                  >
-                    <Heart className={`h-6 w-6 ${couple.hasWeddingDate ? "text-pink-500" : "text-gray-400"}`} />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-4">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage
-                              src={couple.photo || "/placeholder.svg"}
-                              alt={`${couple.husband} e ${couple.wife}`}
-                            />
-                            <AvatarFallback className="bg-pink-100 text-pink-600">
-                              {couple.husband.charAt(0)}
-                              {couple.wife.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-
-                          <div>
-                            <h3 className="font-semibold text-lg text-gray-800">
-                              {couple.husband} & {couple.wife}
-                            </h3>
-                            <p className="text-gray-600">
-                              {couple.hasWeddingDate
-                                ? `Casaram em ${formatDate(couple.weddingDate)}`
-                                : "Data de casamento não informada"}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="text-right space-y-2">
-                          {couple.hasWeddingDate ? (
-                            <>
-                              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                                {getYearFromDate(couple.weddingDate)}
-                              </Badge>
-                              <div className="text-sm text-gray-500">{currentYears} anos juntos</div>
-                            </>
-                          ) : (
-                            <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-300">
-                              Data pendente
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
+                <div
+                  key={couple.id}
+                  className="bg-white p-4 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16 flex-shrink-0">
+                      <AvatarImage
+                        src={couple.photo || "/placeholder.svg"}
+                        alt={`${couple.husband} e ${couple.wife}`}
+                      />
+                      <AvatarFallback className="bg-pink-100 text-pink-600">
+                        {couple.husband.charAt(0)}
+                        {couple.wife.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-gray-800 truncate">
+                        {couple.husband} & {couple.wife}
+                      </h4>
+                      <p className="text-sm text-gray-500">{formatDate(couple.weddingDate)}</p>
+                      <Badge
+                        variant="outline"
+                        className="mt-2 bg-purple-50 text-purple-700 border-purple-200"
+                      >
+                        {currentYears} anos
+                      </Badge>
                     </div>
                   </div>
                 </div>
@@ -134,40 +119,78 @@ export function Timeline({ couples, parseDate, calculateMarriageTime }: Timeline
             })}
           </div>
         </div>
+      ))}
 
-        {/* Summary */}
-        {sortedCouplesWithDate.length > 0 && (
-          <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
-            <div className="text-center">
-              <h4 className="font-semibold text-gray-800 mb-2">Resumo da Timeline</h4>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Primeiro Casamento:</span>
-                  <br />
-                  {formatDate(sortedCouplesWithDate[0]?.weddingDate || "")}
-                </div>
-                <div>
-                  <span className="font-medium">Último Casamento:</span>
-                  <br />
-                  {formatDate(sortedCouplesWithDate[sortedCouplesWithDate.length - 1]?.weddingDate || "")}
-                </div>
-                <div>
-                  <span className="font-medium">Período Total:</span>
-                  <br />
-                  {getYearFromDate(sortedCouplesWithDate[sortedCouplesWithDate.length - 1]?.weddingDate || "") -
-                    getYearFromDate(sortedCouplesWithDate[0]?.weddingDate || "")}{" "}
-                  anos
-                </div>
-                <div>
-                  <span className="font-medium">Sem Data:</span>
-                  <br />
-                  {couplesWithoutDate.length} casais
+      {couplesWithoutDate.length > 0 && (
+        <div className="mt-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+            <h3 className="text-xl font-bold text-gray-500 bg-gray-50 px-4 py-2 rounded-full shadow-sm">
+              Datas Pendentes
+            </h3>
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {couplesWithoutDate.map((couple) => (
+              <div
+                key={couple.id}
+                className="bg-white p-4 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 opacity-80"
+              >
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16 flex-shrink-0">
+                    <AvatarImage
+                      src={couple.photo ? `/photos/${couple.photo}` : "/photos/padrao.jpg"}
+                      alt={`${couple.husband} e ${couple.wife}`}
+                    />
+                    <AvatarFallback className="bg-gray-100 text-gray-600">
+                      {couple.husband.charAt(0)}
+                      {couple.wife.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <h4 className="font-bold text-gray-800 truncate">
+                      {couple.husband} & {couple.wife}
+                    </h4>
+                    <p className="text-sm text-gray-500">Data não informada</p>
+                    <Badge
+                      variant="outline"
+                      className="mt-2 bg-gray-50 text-gray-600 border-gray-300"
+                    >
+                      Pendente
+                    </Badge>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {couplesWithDate.length > 0 && (
+        <div className="mt-12 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100 text-center">
+          <h4 className="font-semibold text-gray-800 mb-2">Resumo da Timeline</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <p className="font-medium text-purple-800">Primeiro Casamento</p>
+              <p className="text-gray-600">{formatDate(couplesWithDate[0]?.weddingDate || "")}</p>
+            </div>
+            <div>
+              <p className="font-medium text-purple-800">Último Casamento</p>
+              <p className="text-gray-600">
+                {formatDate(couplesWithDate[couplesWithDate.length - 1]?.weddingDate || "")}
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-purple-800">Total de Casais</p>
+              <p className="text-gray-600">{couplesWithDate.length} com data</p>
+            </div>
+            <div>
+              <p className="font-medium text-purple-800">Datas Pendentes</p>
+              <p className="text-gray-600">{couplesWithoutDate.length} casais</p>
             </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   )
 }

@@ -91,59 +91,59 @@ export function WeddingCalendar({ couples, parseDate }: WeddingCalendarProps) {
   const days = getDaysInMonth(currentDate)
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
             <Heart className="h-5 w-5 text-pink-500" />
             Calendário de Aniversários
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigateMonth("prev")}>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => navigateMonth("prev")}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <h2 className="text-xl font-semibold min-w-[200px] text-center">
+            <h2 className="text-base sm:text-lg font-semibold w-32 sm:w-40 text-center">
               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
-            <Button variant="outline" size="sm" onClick={() => navigateMonth("next")}>
+            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => navigateMonth("next")}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-7 gap-2 mb-4">
+      <CardContent className="p-2 sm:p-4">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
           {daysOfWeek.map((day) => (
-            <div key={day} className="text-center font-semibold text-sm text-gray-600 p-2">
-              {day}
+            <div key={day} className="text-center font-bold text-xs text-gray-500">
+              {day.charAt(0)}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2">
           {days.map((day, index) => {
             const anniversaries = day ? getAnniversariesForDay(day) : []
             const hasAnniversary = anniversaries.length > 0
+            const isToday = day === new Date().getDate() && currentDate.getMonth() === new Date().getMonth() && currentDate.getFullYear() === new Date().getFullYear()
 
             return (
               <div
                 key={index}
-                className={`min-h-[80px] p-2 border rounded-lg ${
-                  day ? "bg-white hover:bg-gray-50" : "bg-gray-100"
-                } ${hasAnniversary ? "border-pink-300 bg-pink-50" : "border-gray-200"}`}
+                className={`relative min-h-[60px] sm:min-h-[90px] p-1 sm:p-2 border rounded-md transition-colors ${
+                  day ? "bg-white" : "bg-gray-50/50"
+                } ${hasAnniversary ? "border-pink-300 bg-pink-50/80" : "border-gray-200"}`}
               >
                 {day && (
                   <>
-                    <div className="font-semibold text-sm mb-1">{day}</div>
-                    {anniversaries.map((couple) => (
-                      <div key={couple.id} className="space-y-1">
-                        <Badge variant="secondary" className="text-xs bg-pink-100 text-pink-800">
-                          {new Date().getFullYear() - parseDate(couple.weddingDate)!.getFullYear()}º ano
-                        </Badge>
-                        <div className="text-xs text-gray-600 leading-tight">
-                          {couple.husband.split(" ")[0]} & {couple.wife.split(" ")[0]}
+                    <div className={`text-xs sm:text-sm font-bold ${isToday ? 'text-white bg-pink-500 rounded-full w-5 h-5 flex items-center justify-center' : ''}`}>{day}</div>
+                    <div className="absolute bottom-1 left-1 right-1 space-y-1">
+                      {anniversaries.map((couple) => (
+                        <div key={couple.id} className="text-center">
+                          <Badge variant="secondary" className="text-[9px] sm:text-[10px] leading-tight bg-pink-100 text-pink-800 p-0.5 rounded-sm">
+                            {couple.husband.charAt(0)}&{couple.wife.charAt(0)}
+                          </Badge>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </>
                 )}
               </div>

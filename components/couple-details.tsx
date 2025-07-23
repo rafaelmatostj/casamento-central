@@ -85,7 +85,7 @@ export function CoupleDetails({ couple, parseDate, calculateMarriageTime, onClos
           </Button>
           <div className="flex items-center space-x-4 pr-8">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={couple.photo || "/placeholder.svg"} alt={`${couple.husband} e ${couple.wife}`} />
+              <AvatarImage src={couple.photo ? `/photos/${couple.photo}` : "/photos/padrao.jpg"} alt={`${couple.husband} e ${couple.wife}`} />
               <AvatarFallback className="bg-pink-100 text-pink-600 text-xl">
                 {couple.husband.charAt(0)}
                 {couple.wife.charAt(0)}
