@@ -303,7 +303,7 @@ export default function WeddingCalendarApp() {
             <h1 className="text-4xl font-bold text-gray-800">Calendário de Casamentos</h1>
             <Heart className="h-8 w-8 text-pink-500" />
           </div>
-          <p className="text-lg text-gray-600">Congregação das Testemunhas de Jeová</p>
+          <p className="text-lg text-gray-600">Congregação Central de Aparecida</p>
         </div>
 
         {/* Stats Cards */}
