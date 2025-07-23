@@ -19,9 +19,10 @@ interface Couple {
 interface WeddingCalendarProps {
   couples: Couple[]
   parseDate: (dateString: string) => Date | null
+  onCoupleSelect: (couple: Couple) => void
 }
 
-export function WeddingCalendar({ couples, parseDate }: WeddingCalendarProps) {
+export function WeddingCalendar({ couples, parseDate, onCoupleSelect }: WeddingCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
   const monthNames = [
@@ -128,9 +129,14 @@ export function WeddingCalendar({ couples, parseDate }: WeddingCalendarProps) {
             return (
               <div
                 key={index}
+                onClick={() => hasAnniversary && onCoupleSelect(anniversaries[0])}
                 className={`relative min-h-[60px] sm:min-h-[90px] p-1 sm:p-2 border rounded-md transition-colors ${
                   day ? "bg-white" : "bg-gray-50/50"
-                } ${hasAnniversary ? "border-pink-300 bg-pink-50/80" : "border-gray-200"}`}
+                } ${
+                  hasAnniversary
+                    ? "border-pink-300 bg-pink-50/80 cursor-pointer hover:bg-pink-100"
+                    : "border-gray-200"
+                }`}
               >
                 {day && (
                   <>

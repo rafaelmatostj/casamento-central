@@ -112,26 +112,26 @@ export function CoupleDetails({ couple, parseDate, calculateMarriageTime, onClos
                   <h3 className="text-lg font-semibold text-gray-800">Tempo de Casamento</h3>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-pink-600">{marriageTime.years}</div>
-                    <div className="text-sm text-gray-600">Anos</div>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-2 text-center">
+                  <div className="p-2 bg-white/60 rounded-lg">
+                    <p className="text-3xl font-bold text-pink-600">{marriageTime.years}</p>
+                    <p className="text-xs text-gray-500">Anos</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">{marriageTime.months}</div>
-                    <div className="text-sm text-gray-600">Meses</div>
+                  <div className="p-2 bg-white/60 rounded-lg">
+                    <p className="text-3xl font-bold text-pink-600">{marriageTime.months}</p>
+                    <p className="text-xs text-gray-500">Meses</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600">{marriageTime.days}</div>
-                    <div className="text-sm text-gray-600">Dias</div>
+                  <div className="p-2 bg-white/60 rounded-lg">
+                    <p className="text-3xl font-bold text-pink-600">{marriageTime.days}</p>
+                    <p className="text-xs text-gray-500">Dias</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{marriageTime.hours}</div>
-                    <div className="text-sm text-gray-600">Horas</div>
+                  <div className="p-2 bg-white/60 rounded-lg">
+                    <p className="text-3xl font-bold text-pink-600">{String(marriageTime.hours).padStart(2, '0')}</p>
+                    <p className="text-xs text-gray-500">Horas</p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{marriageTime.minutes}</div>
-                    <div className="text-sm text-gray-600">Minutos</div>
+                  <div className="p-2 bg-white/60 rounded-lg">
+                    <p className="text-3xl font-bold text-pink-600">{String(marriageTime.minutes).padStart(2, '0')}</p>
+                    <p className="text-xs text-gray-500">Minutos</p>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-red-600">{marriageTime.seconds}</div>

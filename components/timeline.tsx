@@ -24,9 +24,10 @@ interface TimelineProps {
     minutes: number
     seconds: number
   }
+  onCoupleClick: (couple: Couple) => void
 }
 
-export function Timeline({ couples, parseDate, calculateMarriageTime }: TimelineProps) {
+export function Timeline({ couples, parseDate, calculateMarriageTime, onCoupleClick }: TimelineProps) {
   const couplesWithDate = couples
     .filter((couple) => couple.hasWeddingDate)
     .sort((a, b) => {
@@ -88,12 +89,13 @@ export function Timeline({ couples, parseDate, calculateMarriageTime }: Timeline
               return (
                 <div
                   key={couple.id}
-                  className="bg-white p-4 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300"
+                  className="bg-white p-4 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                  onClick={() => onCoupleClick(couple)}
                 >
                   <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16 flex-shrink-0">
                       <AvatarImage
-                        src={couple.photo || "/placeholder.svg"}
+                        src={couple.photo ? `/photos/${couple.photo}` : "/photos/padrao.jpg"}
                         alt={`${couple.husband} e ${couple.wife}`}
                       />
                       <AvatarFallback className="bg-pink-100 text-pink-600">

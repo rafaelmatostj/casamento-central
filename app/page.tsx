@@ -23,7 +23,9 @@ const parseDate = (dateString: string) => {
 
 const calculateMarriageTime = (weddingDate: string) => {
   const date = parseDate(weddingDate)
-  if (!date) return { years: 0, months: 0, days: 0, text: "Data inválida" }
+  if (!date) {
+    return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, text: "Data inválida" }
+  }
 
   const today = new Date()
   let years = today.getFullYear() - date.getFullYear()
@@ -32,14 +34,21 @@ const calculateMarriageTime = (weddingDate: string) => {
 
   if (days < 0) {
     months--
-    days += new Date(today.getFullYear(), today.getMonth(), 0).getDate()
+    const prevMonthLastDay = new Date(today.getFullYear(), today.getMonth(), 0).getDate()
+    days += prevMonthLastDay
   }
+
   if (months < 0) {
     years--
     months += 12
   }
 
-  return { years, months, days, text: `${years} anos, ${months} meses, ${days} dias` }
+  const diff = today.getTime() - date.getTime()
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+  return { years, months, days, hours, minutes, seconds, text: `${years} anos, ${months} meses, ${days} dias` }
 }
 
 const getNextAnniversaryInfo = (couple: (typeof couplesData)[0]) => {
@@ -87,9 +96,9 @@ export const couplesData = [
     id: 3,
     husband: "Raianny Queiroz",
     wife: "Wagner Henrique",
-    weddingDate: "",
-    photo: "/placeholder.svg?height=100&width=100",
-    hasWeddingDate: false,
+    weddingDate: "26/06/2021",
+    photo: "wagner-raiane.png",
+    hasWeddingDate: true,
   },
   {
     id: 4,
@@ -167,7 +176,7 @@ export const couplesData = [
     id: 13,
     husband: "Pollyanna silva",
     wife: "Walter Silva",
-    weddingDate: "13/07/2000",
+    weddingDate: "13/07/2007",
     photo: "poly-walter.png",
     hasWeddingDate: true,
   },
@@ -259,6 +268,29 @@ export default function WeddingCalendarApp() {
   const [filterByMonth, setFilterByMonth] = useState("all")
   const [filterByDateStatus, setFilterByDateStatus] = useState("all")
   const [selectedCouple, setSelectedCouple] = useState<(typeof couplesData)[0] | null>(null)
+  const [activeTab, setActiveTab] = useState("calendar")
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value)
+    if (e.target.value) {
+      setActiveTab("couples")
+    }
+  }
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value)
+    setActiveTab("couples")
+  }
+
+  const handleFilterMonthChange = (value: string) => {
+    setFilterByMonth(value)
+    setActiveTab("couples")
+  }
+
+  const handleFilterDateStatusChange = (value: string) => {
+    setFilterByDateStatus(value)
+    setActiveTab("couples")
+  }
 
 
 
@@ -392,85 +424,75 @@ export default function WeddingCalendarApp() {
           </Card>
         </div>
 
-        {/* Filter Accordion */}
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="filters">
-            <AccordionTrigger className="text-lg font-medium">
-              <div className="flex items-center gap-2">
-                <Filter className="h-5 w-5" />
-                Filtros e Busca
+        {/* Filtros */}
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Pesquisar</label>
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Pesquisar por nome..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="pl-8 w-full"
+                />
               </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Buscar Casal</label>
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Digite o nome..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-8"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Ordenar por</label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="newest">Mais Recentes</SelectItem>
-                      <SelectItem value="oldest">Mais Antigos</SelectItem>
-                      <SelectItem value="name">Nome (A-Z)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Filtrar por Mês</label>
-                  <Select value={filterByMonth} onValueChange={setFilterByMonth}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os Meses</SelectItem>
-                      <SelectItem value="1">Janeiro</SelectItem>
-                      <SelectItem value="2">Fevereiro</SelectItem>
-                      <SelectItem value="3">Março</SelectItem>
-                      <SelectItem value="4">Abril</SelectItem>
-                      <SelectItem value="5">Maio</SelectItem>
-                      <SelectItem value="6">Junho</SelectItem>
-                      <SelectItem value="7">Julho</SelectItem>
-                      <SelectItem value="8">Agosto</SelectItem>
-                      <SelectItem value="9">Setembro</SelectItem>
-                      <SelectItem value="10">Outubro</SelectItem>
-                      <SelectItem value="11">Novembro</SelectItem>
-                      <SelectItem value="12">Dezembro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Status da Data</label>
-                  <Select value={filterByDateStatus} onValueChange={setFilterByDateStatus}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="with-date">Com Data</SelectItem>
-                      <SelectItem value="without-date">Sem Data</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Ordenar por</label>
+              <Select value={sortBy} onValueChange={handleSortChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Mais Recentes</SelectItem>
+                  <SelectItem value="oldest">Mais Antigos</SelectItem>
+                  <SelectItem value="name">Nome (A-Z)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Filtrar por Mês</label>
+              <Select value={filterByMonth} onValueChange={handleFilterMonthChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Meses</SelectItem>
+                  <SelectItem value="1">Janeiro</SelectItem>
+                  <SelectItem value="2">Fevereiro</SelectItem>
+                  <SelectItem value="3">Março</SelectItem>
+                  <SelectItem value="4">Abril</SelectItem>
+                  <SelectItem value="5">Maio</SelectItem>
+                  <SelectItem value="6">Junho</SelectItem>
+                  <SelectItem value="7">Julho</SelectItem>
+                  <SelectItem value="8">Agosto</SelectItem>
+                  <SelectItem value="9">Setembro</SelectItem>
+                  <SelectItem value="10">Outubro</SelectItem>
+                  <SelectItem value="11">Novembro</SelectItem>
+                  <SelectItem value="12">Dezembro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Status da Data</label>
+              <Select value={filterByDateStatus} onValueChange={handleFilterDateStatusChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="with-date">Com Data</SelectItem>
+                  <SelectItem value="without-date">Sem Data</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="calendar" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 gap-2">
             <TabsTrigger value="calendar" className="text-xs sm:text-sm">Calendário</TabsTrigger>
             <TabsTrigger value="couples" className="text-xs sm:text-sm">Lista</TabsTrigger>
@@ -480,7 +502,7 @@ export default function WeddingCalendarApp() {
 
           <div className="mt-4">
             <TabsContent value="calendar">
-              <WeddingCalendar couples={filteredAndSortedCouples} parseDate={parseDate} />
+              <WeddingCalendar couples={filteredAndSortedCouples} parseDate={parseDate} onCoupleSelect={setSelectedCouple} />
             </TabsContent>
 
             <TabsContent value="couples">
@@ -493,7 +515,7 @@ export default function WeddingCalendarApp() {
             </TabsContent>
 
             <TabsContent value="timeline">
-              <Timeline couples={couplesData} parseDate={parseDate} calculateMarriageTime={calculateMarriageTime} />
+              <Timeline couples={couplesData} parseDate={parseDate} calculateMarriageTime={calculateMarriageTime} onCoupleClick={setSelectedCouple} />
             </TabsContent>
 
             <TabsContent value="anniversaries">

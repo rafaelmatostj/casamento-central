@@ -67,7 +67,7 @@ export function UpcomingAnniversaries({ couples, parseDate }: UpcomingAnniversar
       isToday: daysUntil === 0,
       isTomorrow: daysUntil === 1,
       isThisWeek: daysUntil <= 7,
-      isThisMonth: daysUntil <= 30,
+      isThisMonth: weddingDate.getMonth() === today.getMonth(),
       hasDate: true,
     }
   }
