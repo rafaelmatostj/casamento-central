@@ -241,7 +241,7 @@ export const couplesData = [
     husband: "Adriana R. Albernaz",
     wife: "Vinícius Albernaz",
     weddingDate: "30/06/2017",
-    photo: "/placeholder.svg?height=100&width=100",
+    photo: "vini-dicka.jpg",
     hasWeddingDate: true,
   },
   {
