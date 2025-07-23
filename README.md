@@ -99,4 +99,16 @@ Contribuições são o que tornam a comunidade de código aberto um lugar incrí
 
 Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
+---
+
+## ☕ Sobre o Projeto
+
+Este projeto foi desenvolvido para auxiliar na organização do calendário de casamentos da minha congregação. Se você desejar utilizar este projeto na sua congregação, fique à vontade! Apenas lembre-se de alterar os dados dos casais para os da sua congregação.
+
+Se este projeto te ajudou e você gostaria de me agradecer, que tal me pagar um café?
+
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="180" />]()
+
+---
+
 *(Se não houver um arquivo de licença, você pode criar um com o conteúdo da licença MIT)*

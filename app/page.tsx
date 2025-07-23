@@ -156,14 +156,14 @@ export const couplesData = [
     photo: "/placeholder.svg?height=100&width=100",
     hasWeddingDate: false,
   },
-  {
-    id: 11,
-    husband: "José Adriano",
-    wife: "Ruth Silva",
-    weddingDate: "09/09/2024",
-    photo: "adriano-rute.png",
-    hasWeddingDate: true,
-  },
+  // {
+  //   id: 11,
+  //   husband: "José Adriano",
+  //   wife: "Ruth Silva",
+  //   weddingDate: "09/09/2024",
+  //   photo: "adriano-rute.png",
+  //   hasWeddingDate: true,
+  // },
   {
     id: 12,
     husband: "Patricia Rodrigues",
