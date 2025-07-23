@@ -240,7 +240,7 @@ export const couplesData = [
     id: 21,
     husband: "Adriana R. Albernaz",
     wife: "Vinícius Albernaz",
-    weddingDate: "30/06/2017",
+    weddingDate: "30/06/2018",
     photo: "vini-dicka.jpg",
     hasWeddingDate: true,
   },
