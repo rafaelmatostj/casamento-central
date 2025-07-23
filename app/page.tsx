@@ -256,9 +256,9 @@ export const couplesData = [
     id: 23,
     husband: "Katiana da Silva",
     wife: "Ruimar Paulino",
-    weddingDate: "",
-    photo: "/placeholder.svg?height=100&width=100",
-    hasWeddingDate: false,
+    weddingDate: "27/10/2007",
+    photo: "rui-katiana.png",
+    hasWeddingDate: true,
   },
 ]
 
