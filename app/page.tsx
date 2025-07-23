@@ -82,9 +82,9 @@ export const couplesData = [
     id: 9,
     husband: "Daffny",
     wife: "Raulison Barros",
-    weddingDate: "",
+    weddingDate: "23/08/2018",
     photo: "/placeholder.svg?height=100&width=100",
-    hasWeddingDate: false,
+    hasWeddingDate: true,
   },
   {
     id: 10,
