@@ -193,7 +193,7 @@ export const couplesData = [
     husband: "Airton Silva",
     wife: "Rita Alves",
     weddingDate: "03/08/2012",
-    photo: "/placeholder.svg?height=100&width=100",
+    photo: "rita-airton.png",
     hasWeddingDate: true,
   },
   {
