@@ -120,9 +120,9 @@ export const couplesData = [
     id: 6,
     husband: "Eliane dos Reis",
     wife: "Veronaldo dos Santos",
-    weddingDate: "",
+    weddingDate: "15/05/2021",
     photo: "/placeholder.svg?height=100&width=100",
-    hasWeddingDate: false,
+    hasWeddingDate: true,
   },
   {
     id: 7,
