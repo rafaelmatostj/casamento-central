@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react"
+import { ChevronLeft, ChevronRight, Heart, User } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 interface Couple {
   id: number
@@ -130,7 +131,13 @@ export function WeddingCalendar({ couples, parseDate, onCoupleSelect }: WeddingC
             return (
               <div
                 key={index}
-                onClick={() => hasAnniversary && onCoupleSelect(anniversaries[0])}
+                onClick={() => {
+                  if (anniversaries.length === 1) {
+                    onCoupleSelect(anniversaries[0])
+                  } else if (anniversaries.length > 1) {
+                    // We'll handle this with the popover trigger
+                  }
+                }}
                 className={`relative min-h-[60px] sm:min-h-[90px] p-1 sm:p-2 border rounded-md transition-colors ${
                   day ? "bg-white" : "bg-gray-50/50"
                 } ${
@@ -143,13 +150,41 @@ export function WeddingCalendar({ couples, parseDate, onCoupleSelect }: WeddingC
                   <>
                     <div className={`text-xs sm:text-sm font-bold ${isToday ? 'text-white bg-pink-500 rounded-full w-5 h-5 flex items-center justify-center' : ''}`}>{day}</div>
                     <div className="absolute bottom-1 left-1 right-1 space-y-1">
-                      {anniversaries.map((couple) => (
-                        <div key={couple.id} className="text-center">
+                      {anniversaries.length === 1 && (
+                        <div className="text-center">
                           <Badge variant="secondary" className="text-[9px] sm:text-[10px] leading-tight bg-pink-100 text-pink-800 p-0.5 rounded-sm">
-                            {couple.husband.charAt(0)}&{couple.wife.charAt(0)}
+                            {anniversaries[0].husband.charAt(0)}&{anniversaries[0].wife.charAt(0)}
                           </Badge>
                         </div>
-                      ))}
+                      )}
+                      {anniversaries.length > 1 && (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <div className="text-center w-full">
+                              <Badge variant="secondary" className="text-[9px] sm:text-[10px] leading-tight bg-pink-100 text-pink-800 p-0.5 rounded-sm w-full">
+                                {anniversaries.length} casais
+                              </Badge>
+                            </div>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-48 p-2">
+                            <div className="space-y-2">
+                              <div className="text-xs font-medium text-center text-gray-500 mb-1">
+                                Selecione um casal:
+                              </div>
+                              {anniversaries.map((couple) => (
+                                <div
+                                  key={couple.id}
+                                  className="flex items-center p-2 text-sm rounded-md hover:bg-gray-100 cursor-pointer"
+                                  onClick={() => onCoupleSelect(couple)}
+                                >
+                                  <User className="h-4 w-4 mr-2 text-pink-500" />
+                                  <span className="truncate">{couple.husband.split(' ')[0]} & {couple.wife.split(' ')[0]}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     </div>
                   </>
                 )}
