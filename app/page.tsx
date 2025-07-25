@@ -168,9 +168,9 @@ export const couplesData = [
     id: 12,
     husband: "Patricia Rodrigues",
     wife: "Welton Rodrigues",
-    weddingDate: "",
-    photo: "/placeholder.svg?height=100&width=100",
-    hasWeddingDate: false,
+    weddingDate: "02/12/1995",
+    photo: "elton-patricia.png",
+    hasWeddingDate: true,
   },
   {
     id: 13,
