@@ -210,7 +210,7 @@ export const couplesData = [
     wife: "Priscila Pimentel",
     weddingDate: "29/12/2006",
     photo: "bruno-pri.png",
-    hasWeddingDate: false,
+    hasWeddingDate: true,
   },
   {
     id: 18,
