@@ -208,8 +208,8 @@ export const couplesData = [
     id: 17,
     husband: "Bruno Pimentel",
     wife: "Priscila Pimentel",
-    weddingDate: "",
-    photo: "/placeholder.svg?height=100&width=100",
+    weddingDate: "29/12/2006",
+    photo: "bruno-pri.png",
     hasWeddingDate: false,
   },
   {
